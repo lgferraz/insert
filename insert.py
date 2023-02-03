@@ -35,21 +35,23 @@ with open("base 116490.txt", 'w+') as file:
 print('pronto')
 file.close()
 '''
+import re
 
 
-baseorig = "cod_assc.txt" #base de origem em txt
-nometxt = "base resultado.txt" #base que será gerada
-nometabela = "#NOME" #nome da base no sql
-nomecampos = ["CAMPO1", "CAPO2", "..."] #colunas da base
-tiposdados = "TIPOCAMPO1-TIPOCAMPO2-ETC" #tipo de dados de cada coluna
+baseorig = "cod_assc.txt" #base de origem em txt ex: "cod_assc.txt"
+orig = str(open(baseorig, "r").read()).split("####")
 
+nometxt = re.search("nometxt:.+", orig[0]).group(0).split(":")[1] #base que será gerada ex: "base resultado.txt"
+nometabela = re.search("nometabela:.+", orig[0]).group(0).split(":")[1] #nome da base no sql ex: "#NOME"
+nomecampos = re.search("campos:.+", orig[0]).group(0).split(":")[1].replace(" ", "").split(",") #colunas da base ex: ["CAMPO1", "CAPO2", "..."]
+tiposdados = re.search("tipos:.+", orig[0]).group(0).split(":")[1].replace(" ", "").split(",") #tipo de dados de cada coluna ex: "TIPOCAMPO1-TIPOCAMPO2-ETC"
 
-assc = str(open(baseorig, "r").read())
+assc = orig[1]
 listac = assc.split('\n')
+listac.pop(0)
 qtdlinhas = str(len(listac))
 
 def createtable(nometabela, campos, tipos):
-    tipos = tipos.split('-')
     create = "CREATE TABLE "+nometabela+" ("
     for campo in campos:
         indexcampo = campos.index(campo)
@@ -60,9 +62,8 @@ def createtable(nometabela, campos, tipos):
     return create+")"
 
 def formatar(campos, tipos):
-    tipos = tipos.split('-')
-    campos = campos.split('\t')
     insert = '('
+    campos = campos.split()
     for i in campos:
         indexcampo = campos.index(i)
         tipoi = tipos[indexcampo]
@@ -100,8 +101,13 @@ with open(nometxt, 'w+') as file:
         else:
             file.write(campos+',')
 
-print('pronto')
 file.close()
+
+final = str(open(nometxt, 'r').read()).replace(",;",";")
+with open(nometxt, 'w+') as file:
+        file.write(final)
+file.close()
+print('pronto')
 
 
 
