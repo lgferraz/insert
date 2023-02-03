@@ -1,7 +1,8 @@
-nometxt:basefinal.txt
-nometabela:#nome_tabela
+nometxt:exemplo.txt
+nometabela:#tabelaexemplo
 campos:campo1, campo2, etc
 tipos:INT, INT, INT
 ####
 99898	999	999
 0980909	000	000
+09898	000	0000
